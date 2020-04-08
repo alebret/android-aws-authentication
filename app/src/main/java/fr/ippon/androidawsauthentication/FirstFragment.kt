@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.amazonaws.mobile.client.AWSMobileClient
 import kotlinx.android.synthetic.main.fragment_first.*
 
 /**
@@ -30,7 +31,10 @@ class FirstFragment : Fragment() {
         }
 
         buttonLogout.setOnClickListener {
-            //TODO
+            AWSMobileClient.getInstance().signOut()
+
+            // Close Activity and go to previous page
+            activity?.finish()
         }
     }
 }
