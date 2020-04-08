@@ -3,6 +3,7 @@ package fr.ippon.androidawsauthentication
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.amazonaws.mobile.client.AWSMobileClient
 import com.amazonaws.mobile.client.Callback
@@ -43,6 +44,8 @@ class AuthenticationActivity : AppCompatActivity() {
     }
 
     private fun signIn(login: String, password: String) {
+        showLoader()
+
         AWSMobileClient.getInstance()
             .signIn(login, password, null, object : Callback<SignInResult> {
                 override fun onResult(signInResult: SignInResult) {
@@ -65,10 +68,13 @@ class AuthenticationActivity : AppCompatActivity() {
                             "Unsupported sign-in confirmation: " + signInResult.signInState
                         )
                     }
+                    hideLoader()
                 }
 
                 override fun onError(e: Exception) {
                     Log.e(TAG, e.toString())
+                    showError(e.toString())
+                    hideLoader()
                 }
             })
     }
@@ -76,6 +82,28 @@ class AuthenticationActivity : AppCompatActivity() {
     fun goToMainActivity() {
         val i = Intent(this@AuthenticationActivity, MainActivity::class.java)
         startActivity(i)
+    }
+
+    fun showLoader() {
+        runOnUiThread {
+            progressLogin.visibility = View.VISIBLE
+            textViewError.visibility = View.GONE
+            buttonLogin.isEnabled = false
+        }
+    }
+
+    fun showError(error: String) {
+        runOnUiThread {
+            textViewError.visibility = View.VISIBLE
+            textViewError.text = error
+        }
+    }
+
+    fun hideLoader() {
+        runOnUiThread {
+            progressLogin.visibility = View.GONE
+            buttonLogin.isEnabled = true
+        }
     }
 
 }
