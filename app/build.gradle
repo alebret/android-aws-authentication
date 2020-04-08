@@ -55,4 +55,14 @@ dependencies {
     implementation 'com.amazonaws:aws-android-sdk-appsync:3.0.1'
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.2'
     implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
+
+    def aws_sdk_version = "2.16.10"
+    //For AWSMobileClient only:
+    implementation "com.amazonaws:aws-android-sdk-mobile-client:$aws_sdk_version"
+    //For the drop-in UI also:
+    implementation "com.amazonaws:aws-android-sdk-auth-userpools:$aws_sdk_version"
+    implementation "com.amazonaws:aws-android-sdk-auth-ui:$aws_sdk_version"
+    //For hosted UI also:
+    implementation "com.amazonaws:aws-android-sdk-cognitoauth:$aws_sdk_version"
+
 }
