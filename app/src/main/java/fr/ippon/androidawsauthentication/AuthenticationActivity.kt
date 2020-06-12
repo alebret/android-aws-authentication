@@ -22,10 +22,16 @@ class AuthenticationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_authentication)
 
+        initializeAws()
+        setButton()
+    }
+
+    private fun initializeAws() {
         AWSMobileClient.getInstance()
             .initialize(applicationContext, object : Callback<UserStateDetails> {
                 override fun onResult(userStateDetails: UserStateDetails) {
                     Log.i(TAG, userStateDetails.userState.toString())
+
                     when (userStateDetails.userState) {
                         UserState.SIGNED_IN -> goToMainActivity()
                         else -> AWSMobileClient.getInstance().signOut()
@@ -36,11 +42,12 @@ class AuthenticationActivity : AppCompatActivity() {
                     Log.e(TAG, e.toString())
                 }
             })
+    }
 
+    private fun setButton() {
         buttonLogin.setOnClickListener {
             signIn(editTextLogin.text.toString(), editTextPwd.text.toString())
         }
-
     }
 
     private fun signIn(login: String, password: String) {
@@ -54,10 +61,7 @@ class AuthenticationActivity : AppCompatActivity() {
                         "Sign-in callback state: " + signInResult.signInState
                     )
                     when (signInResult.signInState) {
-                        SignInState.DONE -> {
-                            Log.i(TAG, "Sign-in done.")
-                            goToMainActivity()
-                        }
+                        SignInState.DONE -> goToMainActivity()
                         SignInState.SMS_MFA -> Log.i(TAG, "Please confirm sign-in with SMS.")
                         SignInState.NEW_PASSWORD_REQUIRED -> Log.i(
                             TAG,
