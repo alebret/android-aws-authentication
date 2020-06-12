@@ -14,21 +14,19 @@ class AuthenticationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_authentication)
 
+        initializeAws()
+    }
+
+    private fun initializeAws() {
         AWSMobileClient.getInstance()
             .initialize(applicationContext, object : Callback<UserStateDetails> {
                 override fun onResult(userStateDetails: UserStateDetails) {
                     Log.i(TAG, userStateDetails.userState.toString())
+
                     when (userStateDetails.userState) {
-                        UserState.SIGNED_IN -> {
-                            val i =
-                                Intent(this@AuthenticationActivity, MainActivity::class.java)
-                            startActivity(i)
-                        }
+                        UserState.SIGNED_IN -> signedIn()
                         UserState.SIGNED_OUT -> showSignIn()
-                        else -> {
-                            AWSMobileClient.getInstance().signOut()
-                            showSignIn()
-                        }
+                        else -> signOutAndRetry()
                     }
                 }
 
@@ -36,6 +34,16 @@ class AuthenticationActivity : AppCompatActivity() {
                     Log.e(TAG, e.toString())
                 }
             })
+    }
+
+    private fun signedIn() {
+        val i = Intent(this@AuthenticationActivity, MainActivity::class.java)
+        startActivity(i)
+    }
+
+    private fun signOutAndRetry() {
+        AWSMobileClient.getInstance().signOut()
+        showSignIn()
     }
 
     private fun showSignIn() {
